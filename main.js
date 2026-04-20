@@ -1,0 +1,169 @@
+const loadSales = async () => {
+
+    const data = await fetch("https://tradewinds-stack-eu-north-1.s3.eu-north-1.amazonaws.com/app_data/sales.json", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    }).then((response) => response.json());
+
+    console.log(data);
+
+    const {
+        weekly_sales,
+        categories_weekly_share,
+        mean_sale_per_order_week,
+        top_ten_products,
+        to_ten_customers,
+    } = data;
+
+    const weeklyPercentageCategories = Object.keys(categories_weekly_share)
+        .filter((category) => category !== "week")
+        .map(
+            (week) =>
+                new Object({
+                    name: week,
+                    data: [...categories_weekly_share[week]],
+                }),
+        );
+
+    Highcharts.chart("top-ten-customers", {
+        chart: {
+            type: "column",
+        },
+        title: {
+            text: "top ten customers",
+        },
+        xAxis: {
+            categories: to_ten_customers.map(
+                (customers) => customers.customer_name,
+            ),
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: "€ Euro value)",
+            },
+        },
+        tooltip: {
+            pointFormat: "€{point.y}",
+        },
+        series: [
+            {
+                name: "customers",
+                data: to_ten_customers.map((customer) => customer.sales),
+            },
+        ],
+    });
+
+    Highcharts.chart("top-ten-products", {
+        chart: {
+            type: "column",
+        },
+        title: {
+            text: "top ten products",
+        },
+        xAxis: {
+            categories: top_ten_products.map((product) => product.product_name),
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: "€ Euro value)",
+            },
+        },
+        tooltip: {
+            pointFormat: "€{point.y}",
+        },
+        series: [
+            {
+                name: "products",
+                data: top_ten_products.map((product) => product.sales),
+            },
+        ],
+    });
+
+    Highcharts.chart("weekly-area", {
+        chart: {
+            type: "area",
+        },
+        title: {
+            text: "product category sales share by business week",
+        },
+        xAxis: {
+            categories: categories_weekly_share["week"],
+        },
+        yAxis: {
+            title: {
+                text: "% Percent",
+            },
+        },
+        tooltip: {
+            shared: true,
+        },
+        plotOptions: {
+            area: {
+                stacking: "percent",
+            },
+        },
+        series: weeklyPercentageCategories,
+    });
+
+    Highcharts.chart("weekly-sales-mean", {
+        chart: {
+            type: "spline",
+        },
+        title: {
+            text: "mean sales order value by business week",
+        },
+        xAxis: {
+            categories: mean_sale_per_order_week.map((week) => week.week),
+        },
+        yAxis: {
+            type: "logarithmic",
+            title: {
+                text: "€ Euro value",
+            },
+        },
+        tooltip: {
+            pointFormat: "€{point.y}",
+        },
+        series: [
+            {
+                name: "sales",
+                data: mean_sale_per_order_week.map(
+                    (week) => week.mean_sale_per_order,
+                ),
+                color: "var(--highcharts-color-1, #2caffe)",
+            },
+        ],
+    });
+
+    Highcharts.chart("weekly-sales", {
+        chart: {
+            type: "spline",
+        },
+        title: {
+            text: "week sales total by business week",
+        },
+        xAxis: {
+            categories: weekly_sales.map((week) => week.week),
+        },
+        yAxis: {
+            type: "logarithmic",
+            title: {
+                text: "€ Euro value",
+            },
+        },
+        tooltip: {
+            pointFormat: "€{point.y}",
+        },
+        series: [
+            {
+                name: "sales",
+                data: weekly_sales.map((week) => week.sales),
+                color: "var(--highcharts-color-1, #2caffe)",
+            },
+        ],
+    });
+};
