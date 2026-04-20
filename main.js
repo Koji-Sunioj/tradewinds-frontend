@@ -14,7 +14,7 @@ const loadSales = async () => {
         categories_weekly_share,
         mean_sale_per_order_week,
         top_ten_products,
-        to_ten_customers,
+        top_ten_customers,
     } = data;
 
     const weeklyPercentageCategories = Object.keys(categories_weekly_share)
@@ -35,7 +35,7 @@ const loadSales = async () => {
             text: "top ten customers",
         },
         xAxis: {
-            categories: to_ten_customers.map(
+            categories: top_ten_customers.map(
                 (customers) => customers.customer_name,
             ),
         },
@@ -51,7 +51,7 @@ const loadSales = async () => {
         series: [
             {
                 name: "customers",
-                data: to_ten_customers.map((customer) => customer.sales),
+                data: top_ten_customers.map((customer) => customer.sales),
             },
         ],
     });
