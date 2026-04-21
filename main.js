@@ -74,6 +74,7 @@ const loadSales = async () => {
                 dataLabels: {
                     enabled: true,
                     color: "contrast",
+                    format: '€ {point.value:,.2f}'
                 },
             },
         ],
