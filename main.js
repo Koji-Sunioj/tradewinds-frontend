@@ -1,11 +1,13 @@
 const loadSales = async () => {
-
-    const data = await fetch("https://tradewinds-stack-eu-north-1.s3.eu-north-1.amazonaws.com/app_data/sales.json", {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
+    const data = await fetch(
+        "https://tradewinds-stack-eu-north-1.s3.eu-north-1.amazonaws.com/app_data/sales.json",
+        {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
         },
-    }).then((response) => response.json());
+    ).then((response) => response.json());
 
     console.log(data);
 
@@ -15,6 +17,7 @@ const loadSales = async () => {
         mean_sale_per_order_week,
         top_ten_products,
         top_ten_customers,
+        employee_sales_per_category,
     } = data;
 
     const weeklyPercentageCategories = Object.keys(categories_weekly_share)
@@ -27,7 +30,57 @@ const loadSales = async () => {
                 }),
         );
 
+    Highcharts.chart("employee-category-heatmap", {
+        chart: {
+            type: "heatmap",
+        },
+
+        title: {
+            text: "product category sales total per employee",
+        },
+
+        xAxis: {
+            categories: employee_sales_per_category.employees,
+        },
+
+        yAxis: {
+            categories: employee_sales_per_category.categories,
+            reversed: true,
+            title: {
+                text: "€ Euro value",
+            },
+        },
+
+        colorAxis: {
+            min: 0,
+            minColor: "#FFFFFF",
+            maxColor: Highcharts.getOptions().colors[0],
+        },
+
+        legend: {
+            align: "right",
+            layout: "vertical",
+            margin: 20,
+            verticalAlign: "middle",
+        },
+
+        tooltip: {
+            format: "{series.xAxis.categories.(point.x)}, {series.yAxis.categories.(point.y)} : €{point.value}",
+        },
+
+        series: [
+            {
+                data: employee_sales_per_category.matrix,
+                dataLabels: {
+                    enabled: true,
+                    color: "contrast",
+                },
+            },
+        ],
+    });
+
     Highcharts.chart("top-ten-customers", {
+        legend: { enabled: false },
         chart: {
             type: "column",
         },
@@ -42,7 +95,7 @@ const loadSales = async () => {
         yAxis: {
             min: 0,
             title: {
-                text: "€ Euro value)",
+                text: "€ Euro value",
             },
         },
         tooltip: {
@@ -57,6 +110,7 @@ const loadSales = async () => {
     });
 
     Highcharts.chart("top-ten-products", {
+        legend: { enabled: false },
         chart: {
             type: "column",
         },
@@ -69,7 +123,7 @@ const loadSales = async () => {
         yAxis: {
             min: 0,
             title: {
-                text: "€ Euro value)",
+                text: "€ Euro value",
             },
         },
         tooltip: {
@@ -110,6 +164,7 @@ const loadSales = async () => {
     });
 
     Highcharts.chart("weekly-sales-mean", {
+        legend: { enabled: false },
         chart: {
             type: "spline",
         },
@@ -140,6 +195,7 @@ const loadSales = async () => {
     });
 
     Highcharts.chart("weekly-sales", {
+        legend: { enabled: false },
         chart: {
             type: "spline",
         },
