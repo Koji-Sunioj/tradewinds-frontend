@@ -9,9 +9,8 @@ const loadSales = async () => {
         },
     ).then((response) => response.json());
 
-    console.log(data);
-
     const {
+        country_sales,
         weekly_sales,
         categories_weekly_share,
         mean_sale_per_order_week,
@@ -29,6 +28,103 @@ const loadSales = async () => {
                     data: [...categories_weekly_share[week]],
                 }),
         );
+
+    const topology = await fetch(
+        "https://code.highcharts.com/mapdata/custom/world.topo.json",
+    ).then((response) => response.json());
+
+
+    console.log(country_sales["week-change"]);
+
+    Highcharts.mapChart("country-change", {
+        chart: {
+            map: topology,
+        },
+
+        colorAxis: {
+            dataClasses: [
+                {
+                    to: 0,
+                    color: "#0200D0",
+                },
+                {
+                    from:0,
+                    to: 10000,
+                    color: "#C40401",
+                },
+            ],
+        },
+        title: {
+            text: "sales week change",
+        },
+
+        mapNavigation: {
+            enabled: true,
+            buttonOptions: {
+                alignTo: "spacingBox",
+            },
+        },
+
+        tooltip: {
+            valuePrefix: "€",
+        },
+
+        series: [
+            {
+                color: "#FFFFFF",
+                name: "sales week change",
+                data: country_sales["week-change"],
+                dataLabels: {
+                    enabled: true,
+                    format: "{point.value:,.2f}",
+                },
+                states: {
+                    hover: {
+                        color: "#BADA55",
+                    },
+                },
+            },
+        ],
+    });
+    Highcharts.mapChart("country-sales", {
+        chart: {
+            map: topology,
+        },
+
+        title: {
+            text: `sales for period: ${country_sales.period}`,
+        },
+
+        mapNavigation: {
+            enabled: true,
+            buttonOptions: {
+                alignTo: "spacingBox",
+            },
+        },
+        colorAxis: {
+            min: 0,
+        },
+
+        tooltip: {
+            valuePrefix: "€",
+        },
+
+        series: [
+            {
+                name: `Sales for period: ${country_sales.period}`,
+                data: country_sales["sales"],
+                dataLabels: {
+                    enabled: true,
+                    format: "{point.value:,.2f}",
+                },
+                states: {
+                    hover: {
+                        color: "#BADA55",
+                    },
+                },
+            },
+        ],
+    });
 
     Highcharts.chart("employee-category-heatmap", {
         chart: {
@@ -74,7 +170,7 @@ const loadSales = async () => {
                 dataLabels: {
                     enabled: true,
                     color: "contrast",
-                    format: '€ {point.value:,.2f}'
+                    format: "€ {point.value:,.2f}",
                 },
             },
         ],
