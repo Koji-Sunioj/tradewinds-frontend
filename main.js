@@ -33,8 +33,30 @@ const loadSales = async () => {
         "https://code.highcharts.com/mapdata/custom/world.topo.json",
     ).then((response) => response.json());
 
+    const weekChangeDataClasses = (countries) => {
+        const values = countries["week-change"].map((country) => country[1]);
+        values.sort();
+        const min = Math.min(...values);
+        const max = Math.max(...values);
 
-    console.log(country_sales["week-change"]);
+        const dataClasses = [];
+        const min_colors = ["#ff0000", "#ff8080", "#ffe6e6"];
+
+        for (let i = 1; i <= 3; i++) {
+            dataClasses.push({ from: min / i, color: min_colors[i - 1] });
+        }
+
+        dataClasses.push({ from: 0, color: "#e6f0ff" });
+
+        const max_colors = ["#0066ff", "#80b3ff"];
+
+        for (let i = 3; i != 1; i--) {
+            dataClasses.push({ from: max / i, color: max_colors[i - 2] });
+        }
+        return dataClasses;
+    };
+
+    const values = country_sales["week-change"].map((country) => country[1]);
 
     Highcharts.mapChart("country-change", {
         chart: {
@@ -42,17 +64,7 @@ const loadSales = async () => {
         },
 
         colorAxis: {
-            dataClasses: [
-                {
-                    to: 0,
-                    color: "#0200D0",
-                },
-                {
-                    from:0,
-                    to: 10000,
-                    color: "#C40401",
-                },
-            ],
+            dataClasses: weekChangeDataClasses(country_sales),
         },
         title: {
             text: "sales week change",
