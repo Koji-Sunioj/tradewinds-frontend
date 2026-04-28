@@ -19,7 +19,7 @@ jobs:
         with:
           sparse-checkout: |
             .
-            #!.git
+            !.git
             #!.github
       - name: upload-to-s3
         uses: jakejarvis/s3-sync-action@master
