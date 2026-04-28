@@ -16,11 +16,9 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@master
-        with:
-          sparse-checkout: |
-            .
-            !.git
-            #!.github
+      - name: clean-checkout
+        run: | 
+          rm -rf .git
       - name: upload-to-s3
         uses: jakejarvis/s3-sync-action@master
         with:
