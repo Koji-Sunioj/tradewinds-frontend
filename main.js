@@ -1,6 +1,5 @@
 const loadSales = async () => {
     const data = await fetch(
-        //"https://tradewinds-stack-eu-north-1.s3.eu-north-1.amazonaws.com/app_data/sales.json",
         "./app_data/sales.json",
         {
             method: "GET",
