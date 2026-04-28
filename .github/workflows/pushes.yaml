@@ -19,6 +19,7 @@ jobs:
       - name: clean-checkout
         run: | 
           rm -rf .git
+          rm -rf .github
       - name: upload-to-s3
         uses: jakejarvis/s3-sync-action@master
         with:
