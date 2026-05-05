@@ -30,3 +30,11 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: 'eu-north-1'
           DEST_DIR: 'front_end'
+      - name: invalidate-cloudfront
+        uses: chetan/invalidate-cloudfront-action@v2
+        env:
+          AWS_REGION: "eu-north-1"
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          DISTRIBUTION: ${{ secrets.CLOUDFRONT_ID }}
+          PATHS: "/index.html"
