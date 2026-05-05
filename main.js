@@ -1,6 +1,6 @@
 const loadSales = async () => {
     const data = await fetch(
-        "/app_data/sales.json",
+        "./app_data/sales.json",
         {
             method: "GET",
             headers: {
