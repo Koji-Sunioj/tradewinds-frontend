@@ -9,6 +9,9 @@ const loadSales = async () => {
         },
     ).then((response) => response.json());
 
+    const salesHeader = document.getElementById("sales-header");
+    salesHeader.innerText = "Sales by business week, last period " + data.country_sales.period
+
     const {
         country_sales,
         weekly_sales,
